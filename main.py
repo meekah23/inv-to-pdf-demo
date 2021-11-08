@@ -25,7 +25,7 @@ pdfmetrics.registerFont(TTFont('Arial', 'Arial.ttf'))
 pdfmetrics.registerFont(TTFont('ArialBd', 'ArialBd.ttf'))
 
 
-
+table = [] 
 
 
 class VanInvoice(QWidget):
@@ -44,6 +44,7 @@ class VanInvoice(QWidget):
         self.pdfbtn_wo.clicked.connect(self.toWPDF)
         self.refresh_btn.clicked.connect(self.hist)
         self.btn_help.clicked.connect(self.welcome.show)
+        
         
         
     def hist(self):
@@ -472,11 +473,13 @@ class VanInvoice(QWidget):
                 print(e)
                 QMessageBox.information(self,"Error", "Failed to run script.")
                 
+              
 
     def getData(self):
+        global table, headers,result,right,amt,gst,total,date, saleman,addedby,invnum,quote, name, sadd1, sadd2, sadd3, scode, sphone, spstno, lstreet, lname, ladd1, ladd2, ladd3, lcode,gstnum
         try:
             start_time = time.time()
-            global table, headers,result,right,amt,gst,total,date, saleman,addedby,invnum,quote, name, sadd1, sadd2, sadd3, scode, sphone, spstno, lstreet, lname, ladd1, ladd2, ladd3, lcode,gstnum
+            
             conn = sqlite3.connect(':memory:')
             cur = conn.cursor()
 
@@ -537,6 +540,7 @@ class VanInvoice(QWidget):
                         "INNER JOIN pri_hd ON pri_det.OD_UNO = pri_hd.ONUMBER "
                         )
             table = cur.fetchall()
+            
             b = [el[5] for el in table]
             newlist = list(dict.fromkeys(b))            
             finalist=[]
@@ -581,11 +585,14 @@ class VanInvoice(QWidget):
         except Exception as e:
                 print(e)
                 QMessageBox.information(self,"Error", "Failed to run script.")
+                pass
 
     def toPDF(self):
         start_time = time.time()
-        directory = "Demo/Demo Files"
+        directory = "Demo/Demo Files" 
+        if not table: pass
         all_data = [[x for x in g] for x, g in groupby(table, key = lambda x: x[5])]
+        
         try:
             os.makedirs(directory, exist_ok = True)
             print("Directory '%s' created successfully" % directory)
@@ -765,7 +772,8 @@ class VanInvoice(QWidget):
             self.time_label.setText("PDF created for " + str(execution_time) + " secs")
         except Exception as e:
             print(e)
-            QMessageBox.information(self, "Error", "Failed to run script.")
+            QMessageBox.information(self, "Error", "Failed to run script.\nMake sure to click SCAN before creating pdf.")
+            pass
 
 
 class Welcome(QWidget):

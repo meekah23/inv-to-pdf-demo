@@ -15,6 +15,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
+table = [] 
 
 def getData(self):
         try:
@@ -126,6 +127,7 @@ def getData(self):
 def toPDF(self):
         start_time = time.time()
         directory = "Demo/Demo Files"
+        if not table: pass
         all_data = [[x for x in g] for x, g in groupby(table, key = lambda x: x[5])]
         try:
             os.makedirs(directory, exist_ok = True)
@@ -315,4 +317,4 @@ def toPDF(self):
             self.time_label.setText("PDF created for " + str(execution_time) + " secs")
         except Exception as e:
             print(e)
-            QMessageBox.information(self, "Error", "Failed to run script.")
+            QMessageBox.information(self, "Error", "Failed to run script.\nMake sure to click SCAN before creating pdf.")
